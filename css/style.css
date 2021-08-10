@@ -1,0 +1,197 @@
+/* You can add global styles to this file, and also import other style files */
+.navbar{
+    background-color: black;
+    color: #70db4f;
+  
+  }
+  .navbar-dark .navbar-brand {
+    color: #70db4f;
+  }
+  .navbar-dark .navbar-brand:focus, .navbar-dark .navbar-brand:hover {
+    color: #70db4f;
+  }
+  header
+  {
+      background-image: linear-gradient(rgba(0,0,0,0.9),rgba(17, 17, 17, 0.9)),url(https://source.unsplash.com/1600x900/?technology);
+      height: 100vh;
+      -webkit-background-size: cover;
+      background-size: cover;
+      background-position: center center;
+  }
+  
+  .banner-text
+  {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      text-align: center;
+  }
+  .navbar-brand
+  {
+      font-family: Arial, Helvetica, sans-serif;
+    color: #70db4f;
+  }
+  .nav-link
+  {
+      font-family:Arial, Helvetica, sans-serif;
+      text-transform: uppercase;
+  }
+  
+  .banner-text p
+  {
+      font-family:Arial, Helvetica, sans-serif;
+      color: #fff;
+  }
+  
+  .banner-btn a
+  {
+      border: 1px solid #fff;
+      border-radius: 50px;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 10px 50px;
+      display: inline-block;
+      margin-top: 15px;
+      color: #fff;
+  
+  }
+  .banner-btn a:hover
+  {
+      color: #fff;
+      background-image: linear-gradient(to right, #b6fa67, #427724);
+  }
+  
+  /*text animation*/
+  
+  .text-area
+  {
+      width: max-content;
+      font-size: 70px;
+      font-family: roboto;
+      text-transform: uppercase;
+      font-weight: bold;
+  }
+  .text-area span
+  {
+      color: #70db4f;
+      opacity: 0;
+      transform: translate(0,-100px) rotate(360dg) scale(0);
+      animation: animate 5s forwards;
+  }
+  
+  .text-area span
+  {
+      display: inline-block;
+  }
+  .text-area span:nth-of-type(2)
+  {
+      animation-delay: .1s;
+  }
+  .text-area span:nth-of-type(3)
+  {
+      animation-delay: .2s;
+  }
+  .text-area span:nth-of-type(4)
+  {
+      animation-delay: .3s;
+  }
+  .text-area span:nth-of-type(5)
+  {
+      animation-delay: .4s;
+  }
+  .text-area span:nth-of-type(6)
+  {
+      animation-delay: .5s;
+  }
+  .text-area span:nth-of-type(7)
+  {
+      animation-delay: .6s;
+  }
+  .text-area span:nth-of-type(8)
+  {
+      animation-delay: .7s;
+  }
+  
+  .border-lable-flt {
+    display: block;
+    position: relative;
+  }
+  .border-lable-flt label, .border-lable-flt > span {
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: text;
+    font-size: 75%;
+    opacity: 1;
+    -webkit-transition: all .2s;
+            transition: all .2s;
+    top: -.5em;
+    left: 0.75rem;
+    z-index: 3;
+    line-height: 1;
+    padding: 0 1px;
+  }
+  .border-lable-flt label::after, .border-lable-flt > span::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    background: white;
+    height: 2px;
+    top: 50%;
+    left: -.2em;
+    right: -.2em;
+    z-index: -1;
+  }
+  .border-lable-flt .form-control::-webkit-input-placeholder {
+    opacity: 1;
+    -webkit-transition: all .2s;
+            transition: all .2s;
+  }
+  .border-lable-flt .form-control:placeholder-shown:not(:focus)::-webkit-input-placeholder {
+    opacity: 0;
+  }
+  .border-lable-flt .form-control:placeholder-shown:not(:focus) + * {
+    font-size: 75%;
+    opacity: .5;
+    top: 0.8rem;
+  }
+  
+  .input-group .border-lable-flt {
+    display: table-cell;
+  }
+  .input-group .border-lable-flt .form-control {
+    border-radius: 0.25rem;
+  }
+  .input-group .border-lable-flt:not(:last-child), .input-group .border-lable-flt:not(:last-child) .form-control {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    border-right: 0;
+  }
+  .input-group .border-lable-flt:not(:first-child), .input-group .border-lable-flt:not(:first-child) .form-control {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+  }
+  
+  @keyframes animate
+  {
+      30%
+      {
+          transform: translate(0,-50px) rotate(180deg) scale(1) ;
+      }
+      60%
+      {
+          transform: translate(0,20px) rotate(0deg) scale(.8) ;
+      }
+  
+      100%
+      {
+          transform: translate(0) rotate(0deg) scale(1) ;
+          opacity: 1;
+      }
+  }
+  a:hover{
+      text-decoration: none;
+  }
+  
+  

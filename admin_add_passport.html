@@ -1,0 +1,570 @@
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <h2><a class="navbar-brand">IdentityChain</a></h2>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link " href="admin_add_aadhaar.html">AADHAAR</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="admin_add_passport.html">PASSPORT</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="admin_search_identity.html">UPDATE</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="admin_view_history.html">View History</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="index.html">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container" style="margin-top: 40px;">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <form method="POST" id="add_passport_form">
+                    <div class="form-group">
+                        <h4>Add Passport using Aadhaar number</h4>
+                    </div>
+                    <div class="form-group">
+                        <label for="aadhaar_number">Aadhaar number:</label>
+                        <input type="number" class="form-control required placeholder" id="aadhaar_number"
+                            name="aadhaar_number" pattern="[0-9]{12}" title="Enter numbers only." required="'required'"
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="passport_number">Passport Number: </label>
+                        <input type="text" class="form-control required placeholder" id="passport_number"
+                            name="passport_number" pattern="[a-zA_Z0-9]{3,}" title="Enter characters only."
+                            required="'required'" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="passport_name">Name: </label>
+                        <input type="text" class="form-control required placeholder" id="passport_name"
+                            name="passport_name" pattern="[a-zA_Z]{3,}" title="Enter characters only."
+                            required="'required'" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="passport_dob_year">Year of Birth: </label>
+                        <input type="number" class="form-control required placeholder" id="passport_dob_year"
+                            name="passport_dob_year" pattern="[0-9]{4}" title="Enter numbers only." required="'required'"
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="passport_expiry_year">Passport Expiry Year: </label>
+                        <input type="number" class="form-control required placeholder" id="passport_expiry_year"
+                            name="passport_expiry_year" pattern="[0-9]{4}" title="Enter numbers only." required="'required'"
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="old_passport_number">Old Passport number</label>
+                        <input type="text" class="form-control required placeholder" id="old_passport_number"
+                            name="old_passport_number" pattern="[a-zA_Z0-9]{3,}" title="Enter characters only."
+                            required="'required'" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <p id="err_msg" style="color: red;"></p>
+                        <input type="button" class="btn btn-primary btn-block" id="addPassport" value="Add">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.4.0/web3.min.js"
+        integrity="sha512-VHTLMyjZ8NOooiTNlMoDFwI5oAkH6NbggI1MSabsysAZs0EAJjRoULS878AMQ79FZtFa8SQiR4emQc/SwXBgng=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var contract;
+
+        var accounts;
+        $(document).ready(function () {
+            var acc;
+            web3 = new Web3(window.ethereum);
+            var add = "0x2FfFc9188404577e05954aD08009B6B38757aA95";
+            var abi = [
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "aadhaar_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "aadhaar_dob_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "aadhaar_address",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "aadhaar_sex",
+				"type": "string"
+			}
+		],
+		"name": "add_aadhaar_details",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "added_aadhaar",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "reason",
+				"type": "string"
+			}
+		],
+		"name": "add_log_using_aadhaar",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "reason",
+				"type": "string"
+			}
+		],
+		"name": "add_log_using_passport",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "passport_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "passport_dob_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "passport_expiry_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "old_passport_number",
+				"type": "string"
+			}
+		],
+		"name": "add_passport_using_aadhaar",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "aaded_passport_using_aadhaar",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "criminal_flag",
+				"type": "string"
+			}
+		],
+		"name": "update_criminal_flag",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "flag_updated",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "criminal_flag",
+				"type": "string"
+			}
+		],
+		"name": "update_criminal_flag_using_passport",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "flag_updated",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			}
+		],
+		"name": "view_aadhaar_details",
+		"outputs": [
+			{
+				"internalType": "uint64",
+				"name": "",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			}
+		],
+		"name": "view_aadhaar_passport_status",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "status_aadhar_only",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "is_aadhaar",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			}
+		],
+		"name": "view_criminal_flag",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "criminal_flag_result",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			}
+		],
+		"name": "view_log_using_aadhaar",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "count",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "location",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "reason",
+						"type": "string"
+					}
+				],
+				"internalType": "struct IdentityChain.log[]",
+				"name": "log_array",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			}
+		],
+		"name": "view_log_using_passport",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "count",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "location",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "reason",
+						"type": "string"
+					}
+				],
+				"internalType": "struct IdentityChain.log[]",
+				"name": "log_array",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			}
+		],
+		"name": "view_passport_details",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_num",
+				"type": "uint64"
+			}
+		],
+		"name": "view_passport_using_aadhaar",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "passport_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "passport_dob_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "passport_expiry_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "old_passport_number",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+ contract = new web3.eth.Contract(abi, add);
+            accounts = ethereum.request({ method: 'eth_accounts' });
+            const account = accounts[0];
+        })
+
+        $('#addPassport').click(function () {
+
+            var aadh_num = parseInt($('#aadhaar_number').val());
+            var pass_number = $('#passport_number').val();
+            var pass_name = $('#passport_name').val();
+            var pass_dob_year = parseInt($('#passport_dob_year').val());
+            var pass_expiry_year = parseInt($('#passport_expiry_year').val());
+            var old_pass_number = $('#old_passport_number').val();
+            if (aadh_num != null && pass_number != 0 && pass_name != null && pass_dob_year != null && pass_expiry_year != null) {
+                
+                contract.methods.add_passport_using_aadhaar(aadh_num, pass_number, pass_name, pass_dob_year, pass_expiry_year,old_pass_number).send({ from: '0x9737AAb6b6fe0B69d6679a5Fb74C607C0eA893ec' }).then(function (res) {
+                    console.log(res);
+                    alert("Passport details added!");
+                    $('#add_passport_form').trigger("reset");
+                    $('#err_msg').html("");
+                }, (err) => {
+                    console.log(err);
+                    $('#err_msg').html("Invalid input!");
+                });
+            }
+        })
+    </script>
+</body>
+
+</html>

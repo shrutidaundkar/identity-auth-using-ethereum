@@ -1,0 +1,423 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	
+	</head>
+<body>
+    <input  type="number" id="num">
+    <p id="numberdisp"></p>
+    <input class="btn btn-primary" type="button" id="store" value="store">
+    <input type="button" id="retrieve" value="retrieve">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.4.0/web3.min.js" integrity="sha512-VHTLMyjZ8NOooiTNlMoDFwI5oAkH6NbggI1MSabsysAZs0EAJjRoULS878AMQ79FZtFa8SQiR4emQc/SwXBgng==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    var contract;
+	
+	var accounts;
+    $(document).ready(function(){
+		var acc;
+        web3 = new Web3(window.ethereum);
+        var add="0x6b3f69da32daef106C9C76D08b5fF85AaA940622";
+        var abi=[
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "aadhaar_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "aadhaar_dob_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "aadhaar_address",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "aadhaar_sex",
+				"type": "string"
+			}
+		],
+		"name": "add_aadhaar_details",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "added_aadhaar",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "reason",
+				"type": "string"
+			}
+		],
+		"name": "add_log_using_aadhaar",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "reason",
+				"type": "string"
+			}
+		],
+		"name": "add_log_using_passport",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "passport_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "passport_dob_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "passport_expiry_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "old_passport_number",
+				"type": "string"
+			}
+		],
+		"name": "add_passport_using_aadhaar",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "aaded_passport_using_aadhaar",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "criminal_flag",
+				"type": "string"
+			}
+		],
+		"name": "update_criminal_flag",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "flag_updated",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			}
+		],
+		"name": "view_aadhaar_details",
+		"outputs": [
+			{
+				"internalType": "uint64",
+				"name": "",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			}
+		],
+		"name": "view_aadhaar_passport_status",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "status_aadhar_only",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "is_aadhaar",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			},
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			}
+		],
+		"name": "view_criminal_flag",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "criminal_flag_result",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_number",
+				"type": "uint64"
+			}
+		],
+		"name": "view_log_using_aadhaar",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "count",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "location",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "reason",
+						"type": "string"
+					}
+				],
+				"internalType": "struct IdentityChain.log[]",
+				"name": "log_array",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			}
+		],
+		"name": "view_log_using_passport",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "count",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "location",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "reason",
+						"type": "string"
+					}
+				],
+				"internalType": "struct IdentityChain.log[]",
+				"name": "log_array",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "aadhaar_num",
+				"type": "uint64"
+			}
+		],
+		"name": "view_passport_using_aadhaar",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "passport_number",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "passport_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "passport_dob_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "passport_expiry_year",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "old_passport_number",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+ 		contract = new web3.eth.Contract(abi,add);
+		accounts =  ethereum.request({ method: 'eth_accounts' });
+		const account = accounts[0];
+    })
+	$('#store').click(function(){
+		console.log("aadh_num");
+	})
+	$('#retrieve').click(function(){
+		var aadh_num=0;
+		aadh_num= parseInt($('#num').val());
+		contract.methods.view_aadhaar_details(aadh_num).call().then((res)=>{
+			$('#numberdisp').html(res[0]+res[1]+res[2]+res[3]+res[4]);
+			console.log(res);
+		},(err)=>{
+			$('#numberdisp').html(err);
+		})
+		
+	})
+    </script>
+</body>
+</html>
